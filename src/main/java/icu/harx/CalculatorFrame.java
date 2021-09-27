@@ -7,7 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.stream.Stream;
 
-public class CalculatorFrame extends JFrame {
+public final class CalculatorFrame extends JFrame {
     private final Context context;
 
     private final JTextField commandsTextField = new JTextField();
