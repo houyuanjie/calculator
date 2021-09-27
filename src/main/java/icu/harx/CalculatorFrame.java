@@ -16,7 +16,7 @@ public final class CalculatorFrame extends JFrame {
     private String result = "0";
     private String commands = "";
 
-    public CalculatorFrame(Context context) {
+    private CalculatorFrame(Context context) {
         super("计算器");
 
         this.context = context;
