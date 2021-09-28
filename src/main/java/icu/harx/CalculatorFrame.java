@@ -207,6 +207,7 @@ public final class CalculatorFrame extends JFrame {
     public static void main(String[] args) {
         // JavaScript 执行环境
         final Context context = Context.newBuilder("js").build();
+        context.initialize("js");
         // 创建窗口对象
         final CalculatorFrame calculatorFrame = new CalculatorFrame(context);
 
