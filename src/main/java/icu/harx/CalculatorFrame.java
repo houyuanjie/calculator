@@ -8,13 +8,20 @@ import java.awt.*;
 import java.util.stream.Stream;
 
 public final class CalculatorFrame extends JFrame {
+    // GraalVM Polyglot Context
     private final Context context;
 
+    // 命令显示区
     private final JTextField commandsTextField = new JTextField();
+    // 结果显示区
     private final JTextField resultTextField = new JTextField();
 
+    // 命令(待求值的算式)
     private String commands = "";
+    // 结果
     private String result = "0";
+    // 幂计算中的底
+    // (幂计算需要先保存两个值, 底和指数, 指数将保存在 commands 中)
     private String powerBase = "";
 
     private CalculatorFrame(Context context) {
@@ -144,6 +151,8 @@ public final class CalculatorFrame extends JFrame {
                 this.result = this.context.eval("js", "Math.sqrt(" + this.result + ")").toString();
             } catch (Exception exception) {
                 exception.printStackTrace();
+
+                this.result = "0";
             }
 
             this.updateView();
@@ -155,10 +164,13 @@ public final class CalculatorFrame extends JFrame {
                 final String value;
 
                 if (this.powerBase.equals("")) {
+                    // 常规计算
                     value = this.context.eval("js", this.commands).toString();
                 } else {
+                    // 幂计算
                     value = this.context.eval("js", "Math.pow(" + this.powerBase + "," + this.commands + ")").toString();
 
+                    // 计算后清空底数, 返回常规计算模式
                     this.powerBase = "";
                 }
 
@@ -193,12 +205,15 @@ public final class CalculatorFrame extends JFrame {
     }
 
     public static void main(String[] args) {
+        // JavaScript 执行环境
         final Context context = Context.newBuilder("js").build();
+        // 创建窗口对象
         final CalculatorFrame calculatorFrame = new CalculatorFrame(context);
 
         calculatorFrame.updateView();
     }
 
+    // 辅助构造网格包布局的约束
     private static GridBagConstraints newGBC(int gridX, int gridY) {
         final GridBagConstraints gridBagConstraints = new GridBagConstraints();
 
