@@ -13,8 +13,9 @@ public final class CalculatorFrame extends JFrame {
     private final JTextField commandsTextField = new JTextField();
     private final JTextField resultTextField = new JTextField();
 
-    private String result = "0";
     private String commands = "";
+    private String result = "0";
+    private String powerBase = "";
 
     private CalculatorFrame(Context context) {
         super("计算器");
@@ -57,7 +58,7 @@ public final class CalculatorFrame extends JFrame {
         final JButton bMinus = new JButton("-");
         final JButton bTimes = new JButton("*");
         final JButton bDividedBy = new JButton("/");
-        final JButton bXor = new JButton("^");
+        final JButton bPower = new JButton("^");
         final JButton bExp = new JButton("e");
         final JButton bMod = new JButton("%");
         final JButton bSqrt = new JButton("√");
@@ -70,7 +71,7 @@ public final class CalculatorFrame extends JFrame {
         mainPanel.add(bDividedBy, newGBC(1, 2));
         mainPanel.add(bTimes, newGBC(2, 2));
         mainPanel.add(bBack, newGBC(3, 2));
-        mainPanel.add(bXor, newGBC(0, 3));
+        mainPanel.add(bPower, newGBC(0, 3));
         mainPanel.add(bExp, newGBC(1, 3));
         mainPanel.add(bMod, newGBC(2, 3));
         mainPanel.add(bSqrt, newGBC(3, 3));
@@ -95,6 +96,7 @@ public final class CalculatorFrame extends JFrame {
         bClear.addActionListener(event -> {
             this.commands = "";
             this.result = "0";
+            this.powerBase = "";
 
             this.updateView();
         });
@@ -106,6 +108,7 @@ public final class CalculatorFrame extends JFrame {
             } else {
                 this.commands = "";
                 this.result = "0";
+                this.powerBase = "";
             }
 
             this.updateView();
@@ -114,7 +117,7 @@ public final class CalculatorFrame extends JFrame {
         // 输入按钮响应
         Stream.of(b0, b1, b2, b3, b4, b5, b6, b7, b8, b9,
                         bDot, bPlus, bMinus, bLBrace, bRBrace,
-                        bTimes, bDividedBy, bXor, bExp, bMod)
+                        bTimes, bDividedBy, bExp, bMod)
                 .forEach(button -> button.addActionListener(
                         event -> {
                             this.commands += event.getActionCommand();
@@ -122,6 +125,16 @@ public final class CalculatorFrame extends JFrame {
                             this.updateView();
                         }
                 ));
+
+        // power 按钮响应
+        bPower.addActionListener(event -> {
+            this.powerBase = this.commands;
+
+            this.commands = "";
+            this.result = "(输入指数)";
+
+            this.updateView();
+        });
 
         // sqrt 按钮响应
         bSqrt.addActionListener(event -> {
@@ -139,12 +152,20 @@ public final class CalculatorFrame extends JFrame {
         // 求值按钮响应
         bEquals.addActionListener(event -> {
             try {
-                final String value = this.context.eval("js", this.commands).toString();
+                final String value;
+
+                if (this.powerBase.equals("")) {
+                    value = this.context.eval("js", this.commands).toString();
+                } else {
+                    value = this.context.eval("js", "Math.pow(" + this.powerBase + "," + this.commands + ")").toString();
+
+                    this.powerBase = "";
+                }
 
                 this.result = switch (value) {
-                    case "Infinity" -> "无穷, 请检查输入";
-                    case "-Infinity" -> "负无穷, 请检查输入";
-                    case "undefined" -> "未知输入";
+                    case "Infinity" -> "无穷, 可能除0";
+                    case "-Infinity" -> "负无穷, 可能除0";
+                    case "undefined" -> "未知的表达式";
                     default -> value;
                 };
             } catch (PolyglotException polyglotException) {

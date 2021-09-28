@@ -1,15 +1,20 @@
 # 计算器
 
+Java 程序设计大作业
+
+Swing 实现的 GUI 程序: 计算器
+
 ## 功能
 
 - 加减乘除
 - 清除退格
+- 开方
 
 ## 需要
 
-- jdk 15+
+- jdk 17+
 
-    (Graal.js)
+  { Switch 表达式， Graal.js }
 
 - maven 3.6.3+
 
