@@ -145,15 +145,19 @@ public final class CalculatorFrame extends JFrame {
 
         // sqrt 按钮响应
         bSqrt.addActionListener(event -> {
-            this.commands = "√" + this.result;
-
             try {
-                this.result = this.context.eval("js", "Math.sqrt(" + this.result + ")").toString();
+                if (this.commands.charAt(0) == '√')
+                    this.result = this.context.eval("js", "Math.sqrt(" + this.result + ")").toString();
+                else {
+                    this.result = this.context.eval("js", "Math.sqrt(" + this.commands + ")").toString();
+                }
             } catch (Exception exception) {
                 exception.printStackTrace();
 
-                this.result = "0";
+                this.result = "输入一个值再开方";
             }
+
+            this.commands = "√(" + this.commands + ")";
 
             this.updateView();
         });
