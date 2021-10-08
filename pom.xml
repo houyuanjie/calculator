@@ -11,6 +11,12 @@
 
     <name>calculator</name>
 
+    <organization>
+        <name>houyuanjie</name>
+        <url>http://harx.icu/</url>
+    </organization>
+    <url>https://github.com/houyuanjie/calculator</url>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>17</maven.compiler.source>
